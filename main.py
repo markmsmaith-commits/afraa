@@ -26,37 +26,86 @@ def save_data(records):
 
 def main(page: ft.Page):
     page.title = "Afraa"
-    page.bgcolor = "#4A148C"
+    page.bgcolor = "#0D47A1"
     page.padding = 0
     page.spacing = 0
 
     state = {"records": load_data()}
 
-    # ═══ العناصر ═══
+    # ═══ الاسم ═══
     name_text = ft.Text(
         "Afraa",
-        size=42,
+        size=44,
         color="#FFD700",
         weight=ft.FontWeight.BOLD,
     )
 
-    days_text = ft.Text("0", size=22, color="#6A1B9A",
+    # ═══ الإحصائيات (بطاقات زجاجية) ═══
+    days_text = ft.Text("0", size=22, color="#FFFFFF",
                          weight=ft.FontWeight.BOLD)
-    total_text = ft.Text("0", size=22, color="#6A1B9A",
+    total_text = ft.Text("0", size=22, color="#FFFFFF",
                           weight=ft.FontWeight.BOLD)
 
-    wage_input = ft.TextField(
-        label="الأجر اليومي",
-        keyboard_type=ft.KeyboardType.NUMBER,
-        bgcolor="#FFFFFF",
-        color="#4A148C",
-        border_radius=14,
-        height=58,
+    days_card = ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("📅 أيام", size=12, color="#B3E5FC",
+                        weight=ft.FontWeight.BOLD),
+                days_text,
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=4,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.35, "#FFFFFF"),
+        border_radius=20,
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#00E5FF")),
+        padding=16,
+        expand=True,
     )
 
+    total_card = ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("💰 مجموع", size=12, color="#B3E5FC",
+                        weight=ft.FontWeight.BOLD),
+                total_text,
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=4,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.35, "#FFFFFF"),
+        border_radius=20,
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#FFD700")),
+        padding=16,
+        expand=True,
+    )
+
+    # ═══ حقل الإدخال الزجاجي 💎 ═══
+    wage_input = ft.TextField(
+        label="💧 الأجر اليومي",
+        hint_text="أدخل المبلغ...",
+        keyboard_type=ft.KeyboardType.NUMBER,
+        text_align=ft.TextAlign.RIGHT,
+        border_radius=24,
+        border_width=1.5,
+        border_color=ft.Colors.with_opacity(0.7, "#00E5FF"),
+        focused_border_color="#FFD700",
+        bgcolor=ft.Colors.with_opacity(0.30, "#FFFFFF"),
+        color="#FFFFFF",
+        text_style=ft.TextStyle(size=17, color="#FFFFFF"),
+        label_style=ft.TextStyle(
+            color="#B3E5FC",
+            weight=ft.FontWeight.BOLD,
+            size=14,
+        ),
+        cursor_color="#FFD700",
+        height=64,
+    )
+
+    # ═══ قائمة السجلات ═══
     records_list = ft.Column(spacing=6)
 
-    # ═══ نافذة الرسالة الرومانسية (Overlay) ═══
+    # ═══ الرسالة الرومانسية (Overlay) ═══
     def close_love(e):
         love_overlay.visible = False
         page.update()
@@ -76,7 +125,7 @@ def main(page: ft.Page):
                 ft.Text("💖 💗 💝 💞", size=36),
                 ft.Container(height=20),
                 ft.ElevatedButton(
-                    "إغلاق 💕",
+                    "💕 إغلاق",
                     on_click=close_love,
                     bgcolor="#FFFFFF",
                     color="#E91E63",
@@ -107,15 +156,18 @@ def main(page: ft.Page):
                     content=ft.Row(
                         [
                             ft.Text(r.get("date", ""), size=13,
-                                    color="#4A148C"),
+                                    color="#B3E5FC"),
                             ft.Text(f"{float(r['wage']):,.0f}", size=16,
-                                    color="#6A1B9A",
+                                    color="#FFFFFF",
                                     weight=ft.FontWeight.BOLD),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    bgcolor=ft.Colors.with_opacity(0.92, "#FFFFFF"),
-                    border_radius=12,
+                    bgcolor=ft.Colors.with_opacity(0.25, "#FFFFFF"),
+                    border_radius=14,
+                    border=ft.border.all(
+                        1, ft.Colors.with_opacity(0.4, "#00E5FF")
+                    ),
                     padding=12,
                 )
             )
@@ -126,19 +178,15 @@ def main(page: ft.Page):
         val = (wage_input.value or "").strip()
         if not val:
             return
-
-        # 💕 الكود السري
         if val == "018755":
             wage_input.value = ""
             love_overlay.visible = True
             page.update()
             return
-
         try:
             wage = float(val)
         except ValueError:
             return
-
         now = datetime.now()
         state["records"].append({
             "wage": wage,
@@ -155,100 +203,73 @@ def main(page: ft.Page):
         save_data([])
         refresh()
 
-    # ═══ المحتوى الرئيسي ═══
+    # ═══ الأزرار الزجاجية 💎 ═══
+    add_btn = ft.Container(
+        content=ft.Text("➕ إضافة اليوم", size=15, color="#FFFFFF",
+                        weight=ft.FontWeight.BOLD,
+                        text_align=ft.TextAlign.CENTER),
+        bgcolor=ft.Colors.with_opacity(0.50, "#00BCD4"),
+        border_radius=22,
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#00E5FF")),
+        padding=ft.padding.symmetric(horizontal=16, vertical=16),
+        alignment=ft.alignment.center,
+        height=56,
+        expand=True,
+        ink=True,
+        on_click=add_day,
+    )
+
+    reset_btn = ft.Container(
+        content=ft.Text("🗑 إعادة تعيين", size=15, color="#FFFFFF",
+                        weight=ft.FontWeight.BOLD,
+                        text_align=ft.TextAlign.CENTER),
+        bgcolor=ft.Colors.with_opacity(0.50, "#E53935"),
+        border_radius=22,
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#FF8A80")),
+        padding=ft.padding.symmetric(horizontal=16, vertical=16),
+        alignment=ft.alignment.center,
+        height=56,
+        expand=True,
+        ink=True,
+        on_click=reset_all,
+    )
+
+    # ═══ المحتوى ═══
     content = ft.Column(
         [
-            ft.Container(height=20),
+            ft.Container(height=25),
             name_text,
-            ft.Container(height=15),
-            ft.Row(
-                [
-                    ft.Container(
-                        content=ft.Column(
-                            [
-                                ft.Text("أيام", size=12, color="#4A148C"),
-                                days_text,
-                            ],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        ),
-                        bgcolor=ft.Colors.with_opacity(0.9, "#FFFFFF"),
-                        border_radius=14,
-                        padding=14,
-                        expand=True,
-                    ),
-                    ft.Container(
-                        content=ft.Column(
-                            [
-                                ft.Text("مجموع", size=12, color="#4A148C"),
-                                total_text,
-                            ],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        ),
-                        bgcolor=ft.Colors.with_opacity(0.9, "#FFFFFF"),
-                        border_radius=14,
-                        padding=14,
-                        expand=True,
-                    ),
-                ],
-                spacing=10,
-            ),
-            ft.Container(height=15),
+            ft.Container(height=20),
+            ft.Row([days_card, total_card], spacing=12),
+            ft.Container(height=18),
             wage_input,
-            ft.Container(height=8),
-            ft.Row(
-                [
-                    ft.ElevatedButton(
-                        "➕ إضافة",
-                        on_click=add_day,
-                        bgcolor="#0288D1",
-                        color="#FFFFFF",
-                        height=50,
-                        expand=True,
-                    ),
-                    ft.ElevatedButton(
-                        "🗑 حذف",
-                        on_click=reset_all,
-                        bgcolor="#E53935",
-                        color="#FFFFFF",
-                        height=50,
-                        expand=True,
-                    ),
-                ],
-                spacing=10,
-            ),
-            ft.Container(height=15),
+            ft.Container(height=10),
+            ft.Row([add_btn, reset_btn], spacing=12),
+            ft.Container(height=18),
             ft.Text("📋 السجلات", size=15, color="#FFD700",
                     weight=ft.FontWeight.BOLD),
             records_list,
-            ft.Container(height=20),
+            ft.Container(height=25),
         ],
         spacing=8,
         scroll=ft.ScrollMode.AUTO,
-        expand=True,
     )
 
-    # ═══ الجذر: خلفية الباندا + المحتوى + نافذة الرسالة ═══
+    # ═══ الجذر: خلفية متدرجة (بدون Stack معقد) ═══
     page.add(
-        ft.Stack(
-            [
-                # 1) صورة الباندا
-                ft.Image(src="bg.jpg", fit=ft.ImageFit.COVER, expand=True),
-                # 2) طبقة بنفسجية شفافة
-                ft.Container(
-                    bgcolor=ft.Colors.with_opacity(0.55, "#4A148C"),
-                    expand=True,
-                ),
-                # 3) المحتوى
-                ft.Container(
-                    content=content,
-                    padding=20,
-                    expand=True,
-                ),
-                # 4) نافذة الرسالة (مخفية حتى تُستدعى)
-                love_overlay,
-            ],
+        ft.Container(
+            content=ft.Container(
+                content=content,
+                padding=20,
+            ),
+            gradient=ft.LinearGradient(
+                begin=ft.alignment.top_left,
+                end=ft.alignment.bottom_right,
+                colors=["#4A148C", "#0D47A1", "#006064"],
+            ),
             expand=True,
-        )
+        ),
+        love_overlay,
     )
 
     refresh()
