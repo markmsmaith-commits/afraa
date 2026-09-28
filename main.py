@@ -26,21 +26,29 @@ def save_data(records):
 
 def main(page: ft.Page):
     page.title = "Afraa"
-    page.bgcolor = "#0D47A1"
+    page.bgcolor = "#1A0B2E"
     page.padding = 0
     page.spacing = 0
 
     state = {"records": load_data()}
 
-    # ═══ الاسم ═══
+    # ═══ الاسم بعرض كامل ═══
     name_text = ft.Text(
-        "Afraa",
-        size=44,
+        "𝔸𝕗𝕣𝕒𝕒",
+        size=48,
         color="#FFD700",
         weight=ft.FontWeight.BOLD,
+        text_align=ft.TextAlign.CENTER,
     )
 
-    # ═══ الإحصائيات (بطاقات زجاجية) ═══
+    name_container = ft.Container(
+        content=name_text,
+        alignment=ft.alignment.center,
+        padding=ft.padding.symmetric(vertical=10),
+        width=400,  # عرض ثابت
+    )
+
+    # ═══ الإحصائيات الزجاجية ═══
     days_text = ft.Text("0", size=22, color="#FFFFFF",
                          weight=ft.FontWeight.BOLD)
     total_text = ft.Text("0", size=22, color="#FFFFFF",
@@ -80,7 +88,7 @@ def main(page: ft.Page):
         expand=True,
     )
 
-    # ═══ حقل الإدخال الزجاجي 💎 ═══
+    # ═══ حقل الإدخال الزجاجي ═══
     wage_input = ft.TextField(
         label="💧 الأجر اليومي",
         hint_text="أدخل المبلغ...",
@@ -105,7 +113,7 @@ def main(page: ft.Page):
     # ═══ قائمة السجلات ═══
     records_list = ft.Column(spacing=6)
 
-    # ═══ الرسالة الرومانسية (Overlay) ═══
+    # ═══ الرسالة الرومانسية ═══
     def close_love(e):
         love_overlay.visible = False
         page.update()
@@ -163,10 +171,10 @@ def main(page: ft.Page):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    bgcolor=ft.Colors.with_opacity(0.25, "#FFFFFF"),
+                    bgcolor=ft.Colors.with_opacity(0.30, "#FFFFFF"),
                     border_radius=14,
                     border=ft.border.all(
-                        1, ft.Colors.with_opacity(0.4, "#00E5FF")
+                        1, ft.Colors.with_opacity(0.5, "#00E5FF")
                     ),
                     padding=12,
                 )
@@ -203,14 +211,14 @@ def main(page: ft.Page):
         save_data([])
         refresh()
 
-    # ═══ الأزرار الزجاجية 💎 ═══
+    # ═══ الأزرار الزجاجية ═══
     add_btn = ft.Container(
         content=ft.Text("➕ إضافة اليوم", size=15, color="#FFFFFF",
                         weight=ft.FontWeight.BOLD,
                         text_align=ft.TextAlign.CENTER),
-        bgcolor=ft.Colors.with_opacity(0.50, "#00BCD4"),
+        bgcolor=ft.Colors.with_opacity(0.55, "#00BCD4"),
         border_radius=22,
-        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#00E5FF")),
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.8, "#00E5FF")),
         padding=ft.padding.symmetric(horizontal=16, vertical=16),
         alignment=ft.alignment.center,
         height=56,
@@ -223,9 +231,9 @@ def main(page: ft.Page):
         content=ft.Text("🗑 إعادة تعيين", size=15, color="#FFFFFF",
                         weight=ft.FontWeight.BOLD,
                         text_align=ft.TextAlign.CENTER),
-        bgcolor=ft.Colors.with_opacity(0.50, "#E53935"),
+        bgcolor=ft.Colors.with_opacity(0.55, "#E53935"),
         border_radius=22,
-        border=ft.border.all(1.5, ft.Colors.with_opacity(0.7, "#FF8A80")),
+        border=ft.border.all(1.5, ft.Colors.with_opacity(0.8, "#FF8A80")),
         padding=ft.padding.symmetric(horizontal=16, vertical=16),
         alignment=ft.alignment.center,
         height=56,
@@ -234,43 +242,44 @@ def main(page: ft.Page):
         on_click=reset_all,
     )
 
-    # ═══ المحتوى ═══
+    # ═══ المحتوى الرئيسي ═══
     content = ft.Column(
         [
-            ft.Container(height=25),
-            name_text,
-            ft.Container(height=20),
+            ft.Container(height=15),
+            name_container,
+            ft.Container(height=15),
             ft.Row([days_card, total_card], spacing=12),
-            ft.Container(height=18),
+            ft.Container(height=15),
             wage_input,
-            ft.Container(height=10),
+            ft.Container(height=8),
             ft.Row([add_btn, reset_btn], spacing=12),
-            ft.Container(height=18),
+            ft.Container(height=15),
             ft.Text("📋 السجلات", size=15, color="#FFD700",
                     weight=ft.FontWeight.BOLD),
             records_list,
-            ft.Container(height=25),
+            ft.Container(height=20),
         ],
         spacing=8,
         scroll=ft.ScrollMode.AUTO,
     )
 
-    # ═══ الجذر: خلفية متدرجة (بدون Stack معقد) ═══
-    page.add(
-        ft.Container(
-            content=ft.Container(
-                content=content,
-                padding=20,
-            ),
-            gradient=ft.LinearGradient(
-                begin=ft.alignment.top_left,
-                end=ft.alignment.bottom_right,
-                colors=["#4A148C", "#0D47A1", "#006064"],
-            ),
+    # ═══ الجذر: الباندا + طبقة + المحتوى ═══
+    # ملاحظة: نستخدم Container مع image_src (بدون Stack)
+    # هذا الأسلوب نجح سابقًا ولم يسبب شاشة بيضاء
+    root = ft.Container(
+        content=ft.Container(
+            content=content,
+            padding=20,
+            bgcolor=ft.Colors.with_opacity(0.55, "#4A148C"),
             expand=True,
         ),
-        love_overlay,
+        image_src="bg.jpg",
+        image_fit=ft.ImageFit.COVER,
+        expand=True,
     )
+
+    page.add(root)
+    page.add(love_overlay)
 
     refresh()
 
