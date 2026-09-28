@@ -30,8 +30,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Copy icon to root
-        run: cp assets/icon.png icon.png
+      - name: Clean old build cache
+        run: rm -rf ~/.cookiecutters build
 
       - name: Build APK
         run: yes | flet build apk
