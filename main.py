@@ -8,7 +8,6 @@ SECRET_CODE = "018755"
 
 PURPLE = "#6A1B9A"
 DEEP_BLUE = "#0288D1"
-TURQUOISE = "#00BCD4"
 GOLD = "#FFD700"
 PINK = "#FF4081"
 RED = "#E53935"
@@ -41,63 +40,16 @@ def main(page: ft.Page):
 
     state = {"records": load_data()}
 
-    # ═══════════════════════════════════════
-    #  الاسم 3D ذهبي (آمن - بدون offset)
-    # ═══════════════════════════════════════
-    NAME = "𝔸𝕗𝕣𝕒𝕒"
-    SIZE = 58
-
-    name_stack = ft.Stack(
-        [
-            # طبقة 1: ظل أسود
-            ft.Container(
-                content=ft.Text(NAME, size=SIZE, color="#1A0000",
-                                weight=ft.FontWeight.BOLD,
-                                text_align=ft.TextAlign.CENTER),
-                left=6, top=7,
-            ),
-            # طبقة 2: ذهبي داكن جدًا
-            ft.Container(
-                content=ft.Text(NAME, size=SIZE, color="#5D4200",
-                                weight=ft.FontWeight.BOLD,
-                                text_align=ft.TextAlign.CENTER),
-                left=4, top=5,
-            ),
-            # طبقة 3: ذهبي غامق
-            ft.Container(
-                content=ft.Text(NAME, size=SIZE, color="#8D6E00",
-                                weight=ft.FontWeight.BOLD,
-                                text_align=ft.TextAlign.CENTER),
-                left=2, top=3,
-            ),
-            # طبقة 4: ذهبي متوسط
-            ft.Container(
-                content=ft.Text(NAME, size=SIZE, color="#FFA000",
-                                weight=ft.FontWeight.BOLD,
-                                text_align=ft.TextAlign.CENTER),
-                left=1, top=1,
-            ),
-            # طبقة 5: الذهبي اللامع (الأمامي)
-            ft.Container(
-                content=ft.Text(NAME, size=SIZE, color=GOLD,
-                                weight=ft.FontWeight.BOLD,
-                                text_align=ft.TextAlign.CENTER),
-                left=0, top=0,
-            ),
-        ],
-        height=SIZE + 30,
-        width=420,
+    # ─── الاسم الذهبي (بسيط وآمن) ───
+    name = ft.Text(
+        "𝔸𝕗𝕣𝕒𝕒",
+        size=56,
+        color=GOLD,
+        weight=ft.FontWeight.BOLD,
+        text_align=ft.TextAlign.CENTER,
     )
 
-    name_container = ft.Container(
-        content=name_stack,
-        alignment=ft.alignment.center,
-        padding=ft.padding.only(top=20, bottom=15),
-    )
-
-    # ═══════════════════════════════════════
-    #  الإحصائيات
-    # ═══════════════════════════════════════
+    # ─── الإحصائيات ───
     days_txt = ft.Text("0", size=24, color=DEEP_BLUE, weight=ft.FontWeight.BOLD)
     total_txt = ft.Text("0", size=24, color=GOLD, weight=ft.FontWeight.BOLD)
 
@@ -111,10 +63,10 @@ def main(page: ft.Page):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=4,
         ),
-        bgcolor=ft.Colors.with_opacity(0.92, "#FFFFFF"),
-        border_radius=24,
-        border=ft.border.all(2.5, DEEP_BLUE),
-        padding=16,
+        bgcolor="#FFFFFF",
+        border_radius=22,
+        border=ft.border.all(2, DEEP_BLUE),
+        padding=14,
         expand=True,
     )
 
@@ -128,37 +80,28 @@ def main(page: ft.Page):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=4,
         ),
-        bgcolor=ft.Colors.with_opacity(0.92, "#FFFFFF"),
-        border_radius=24,
-        border=ft.border.all(2.5, GOLD),
-        padding=16,
+        bgcolor="#FFFFFF",
+        border_radius=22,
+        border=ft.border.all(2, GOLD),
+        padding=14,
         expand=True,
     )
 
-    # ═══════════════════════════════════════
-    #  حقل الإدخال الزجاجي
-    # ═══════════════════════════════════════
+    # ─── حقل الإدخال ───
     wage_input = ft.TextField(
         label="💧 الأجر اليومي",
         hint_text="أدخل المبلغ...",
         keyboard_type=ft.KeyboardType.NUMBER,
         text_align=ft.TextAlign.RIGHT,
-        border_radius=28,
-        border_width=2.5,
-        border_color=ft.Colors.with_opacity(0.7, DEEP_BLUE),
+        border_radius=24,
+        border_color=DEEP_BLUE,
         focused_border_color=GOLD,
-        bgcolor=ft.Colors.with_opacity(0.35, "#FFFFFF"),
-        color="#FFFFFF",
-        text_style=ft.TextStyle(size=18, color="#FFFFFF"),
-        label_style=ft.TextStyle(color="#B3E5FC",
-                                  weight=ft.FontWeight.BOLD, size=14),
-        cursor_color=GOLD,
-        height=65,
+        bgcolor="#FFFFFF",
+        color="#1A0B2E",
+        height=62,
     )
 
-    # ═══════════════════════════════════════
-    #  قائمة السجلات
-    # ═══════════════════════════════════════
+    # ─── قائمة السجلات ───
     records_list = ft.Column(spacing=8)
 
     def refresh():
@@ -196,94 +139,64 @@ def main(page: ft.Page):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    bgcolor=ft.Colors.with_opacity(0.92, "#FFFFFF"),
-                    border_radius=20,
+                    bgcolor="#FFFFFF",
+                    border_radius=18,
                     border=ft.border.all(2, DEEP_BLUE),
-                    padding=14,
+                    padding=12,
                 )
             )
         page.update()
 
-    # ═══════════════════════════════════════
-    #  النافذة الرومانسية الفخمة 💕
-    # ═══════════════════════════════════════
+    # ─── الرسالة الرومانسية (عبر BottomSheet - آمن) ───
     def close_love(e):
-        love_dialog.open = False
+        love_sheet.open = False
         page.update()
 
-    love_content = ft.Column(
-        [
-            ft.Text("💖  💕  💗  💝  💞",
-                    size=28, text_align=ft.TextAlign.CENTER),
-            ft.Container(height=8),
-            ft.Text(
-                "بحبك",
-                size=44,
-                color=GOLD,
-                weight=ft.FontWeight.BOLD,
-                text_align=ft.TextAlign.CENTER,
-            ),
-            ft.Text(
-                "ولك شبر ونص",
-                size=26,
-                color=PINK,
-                weight=ft.FontWeight.BOLD,
-                text_align=ft.TextAlign.CENTER,
-            ),
-            ft.Container(height=8),
-            ft.Text("🌹  🌹  🌹  🌹",
-                    size=30, text_align=ft.TextAlign.CENTER),
-            ft.Container(height=4),
-            ft.Text("❤️  💖  💕  💗  💝",
-                    size=26, text_align=ft.TextAlign.CENTER),
-        ],
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=6,
-        tight=True,
-    )
-
-    love_dialog = ft.AlertDialog(
-        modal=True,
-        bgcolor="#FFF0F5",
-        title=ft.Text(
-            "💕 رسالة خاصة 💕",
-            size=22,
-            color=PINK,
-            weight=ft.FontWeight.BOLD,
-            text_align=ft.TextAlign.CENTER,
-        ),
+    love_sheet = ft.BottomSheet(
         content=ft.Container(
-            content=love_content,
-            width=300,
-            padding=10,
-        ),
-        actions=[
-            ft.Container(
-                content=ft.Text("💕 إغلاق", size=16, color="#FFFFFF",
-                                weight=ft.FontWeight.BOLD),
-                bgcolor=PINK,
-                border_radius=20,
-                padding=ft.padding.symmetric(horizontal=30, vertical=10),
-                on_click=close_love,
-                ink=True,
+            content=ft.Column(
+                [
+                    ft.Text("💖", size=60, text_align=ft.TextAlign.CENTER),
+                    ft.Text("بحبك", size=48, color=GOLD,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER),
+                    ft.Text("ولك شبر ونص", size=26, color=PINK,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER),
+                    ft.Text("🌹  🌹  🌹", size=32,
+                            text_align=ft.TextAlign.CENTER),
+                    ft.Text("💕 💖 💗 💝", size=28,
+                            text_align=ft.TextAlign.CENTER),
+                    ft.Container(height=10),
+                    ft.Container(
+                        content=ft.Text("💕 إغلاق", size=16, color="#FFFFFF",
+                                        weight=ft.FontWeight.BOLD),
+                        bgcolor=PINK,
+                        border_radius=20,
+                        padding=ft.padding.symmetric(horizontal=30, vertical=12),
+                        on_click=close_love,
+                        ink=True,
+                    ),
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=10,
             ),
-        ],
-        actions_alignment=ft.MainAxisAlignment.CENTER,
+            padding=30,
+            bgcolor="#FFF0F5",
+            border_radius=ft.border_radius.only(top_left=30, top_right=30),
+        ),
     )
 
-    # ═══════════════════════════════════════
-    #  المعالجات
-    # ═══════════════════════════════════════
+    # ─── المعالجات ───
     def add_day(e):
         val = (wage_input.value or "").strip()
         if not val:
             return
 
-        # 💕 الكود السري
         if val == SECRET_CODE:
             wage_input.value = ""
-            page.dialog = love_dialog
-            love_dialog.open = True
+            page.update()
+            love_sheet.open = True
             page.update()
             return
 
@@ -310,56 +223,49 @@ def main(page: ft.Page):
         save_data([])
         refresh()
 
-    # ═══════════════════════════════════════
-    #  الأزرار (مع تأثير مائي Ink)
-    # ═══════════════════════════════════════
-    def make_button(text, color, handler):
-        return ft.Container(
-            content=ft.Text(
-                text,
-                size=16,
-                color="#FFFFFF",
-                weight=ft.FontWeight.BOLD,
-                text_align=ft.TextAlign.CENTER,
-            ),
-            bgcolor=color,
-            border_radius=24,
-            padding=ft.padding.symmetric(horizontal=16, vertical=16),
-            alignment=ft.alignment.center,
-            height=56,
-            expand=True,
-            ink=True,
-            on_click=handler,
-        )
+    # ─── الأزرار ───
+    add_btn = ft.ElevatedButton(
+        "➕ إضافة اليوم",
+        on_click=add_day,
+        bgcolor=DEEP_BLUE,
+        color="#FFFFFF",
+        height=54,
+        expand=True,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=22)),
+    )
 
-    add_btn = make_button("➕ إضافة اليوم", DEEP_BLUE, add_day)
-    reset_btn = make_button("🗑 إعادة تعيين", RED, reset_all)
+    reset_btn = ft.ElevatedButton(
+        "🗑 إعادة تعيين",
+        on_click=reset_all,
+        bgcolor=RED,
+        color="#FFFFFF",
+        height=54,
+        expand=True,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=22)),
+    )
 
-    # ═══════════════════════════════════════
-    #  المحتوى
-    # ═══════════════════════════════════════
+    # ─── المحتوى ───
     content = ft.Column(
         [
-            name_container,
-            ft.Container(height=10),
+            ft.Container(height=25),
+            name,
+            ft.Container(height=15),
             ft.Row([days_card, total_card], spacing=10),
-            ft.Container(height=10),
+            ft.Container(height=12),
             wage_input,
-            ft.Container(height=6),
+            ft.Container(height=8),
             ft.Row([add_btn, reset_btn], spacing=10),
-            ft.Container(height=10),
+            ft.Container(height=12),
             ft.Text("📋 السجلات", size=17, color=GOLD,
                     weight=ft.FontWeight.BOLD),
             records_list,
-            ft.Container(height=20),
+            ft.Container(height=25),
         ],
         spacing=10,
         scroll=ft.ScrollMode.AUTO,
     )
 
-    # ═══════════════════════════════════════
-    #  الجذر: خلفية الباندا + المحتوى
-    # ═══════════════════════════════════════
+    # ─── الجذر: خلفية الباندا ───
     page.add(
         ft.Container(
             content=ft.Container(
@@ -371,6 +277,7 @@ def main(page: ft.Page):
             expand=True,
         )
     )
+    page.overlay.append(love_sheet)
 
     refresh()
 
