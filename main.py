@@ -27,12 +27,12 @@ def save_data(records):
 def main(page: ft.Page):
     page.title = "Afraa"
     page.bgcolor = "#4A148C"
-    page.padding = 20
-    page.scroll = ft.ScrollMode.AUTO
+    page.padding = 0
+    page.spacing = 0
 
     state = {"records": load_data()}
 
-    # العناصر
+    # ═══ العناصر ═══
     name_text = ft.Text(
         "Afraa",
         size=42,
@@ -56,6 +56,41 @@ def main(page: ft.Page):
 
     records_list = ft.Column(spacing=6)
 
+    # ═══ نافذة الرسالة الرومانسية (Overlay) ═══
+    def close_love(e):
+        love_overlay.visible = False
+        page.update()
+
+    love_overlay = ft.Container(
+        bgcolor=ft.Colors.with_opacity(0.95, "#E91E63"),
+        visible=False,
+        expand=True,
+        content=ft.Column(
+            [
+                ft.Text("💕", size=90),
+                ft.Text("بحبك", size=64, color="#FFD700",
+                        weight=ft.FontWeight.BOLD),
+                ft.Text("ولك شبر ونص", size=30, color="#FFFFFF",
+                        weight=ft.FontWeight.BOLD),
+                ft.Text("🌹  💕  🌹", size=48),
+                ft.Text("💖 💗 💝 💞", size=36),
+                ft.Container(height=20),
+                ft.ElevatedButton(
+                    "إغلاق 💕",
+                    on_click=close_love,
+                    bgcolor="#FFFFFF",
+                    color="#E91E63",
+                    height=52,
+                    width=180,
+                ),
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=14,
+        ),
+    )
+
+    # ═══ التحديث ═══
     def refresh():
         recs = state["records"]
         days_text.value = str(len(recs))
@@ -79,47 +114,31 @@ def main(page: ft.Page):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    bgcolor="#FFFFFF",
+                    bgcolor=ft.Colors.with_opacity(0.92, "#FFFFFF"),
                     border_radius=12,
                     padding=12,
                 )
             )
         page.update()
 
-    # نافذة الرسالة السرية
-    def close_dialog(e):
-        dlg.open = False
-        page.update()
-
-    dlg = ft.AlertDialog(
-        title=ft.Text("💕", size=30),
-        content=ft.Column(
-            [
-                ft.Text("بحبك", size=30, color="#E91E63",
-                        weight=ft.FontWeight.BOLD),
-                ft.Text("ولك شبر ونص", size=18, color="#6A1B9A"),
-                ft.Text("🌹 💕 🌹", size=24),
-            ],
-            tight=True,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        actions=[ft.TextButton("إغلاق", on_click=close_dialog)],
-    )
-
+    # ═══ المعالجات ═══
     def add_day(e):
         val = (wage_input.value or "").strip()
         if not val:
             return
+
+        # 💕 الكود السري
         if val == "018755":
             wage_input.value = ""
-            page.dialog = dlg
-            dlg.open = True
+            love_overlay.visible = True
             page.update()
             return
+
         try:
             wage = float(val)
         except ValueError:
             return
+
         now = datetime.now()
         state["records"].append({
             "wage": wage,
@@ -136,63 +155,100 @@ def main(page: ft.Page):
         save_data([])
         refresh()
 
-    # الواجهة
+    # ═══ المحتوى الرئيسي ═══
+    content = ft.Column(
+        [
+            ft.Container(height=20),
+            name_text,
+            ft.Container(height=15),
+            ft.Row(
+                [
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text("أيام", size=12, color="#4A148C"),
+                                days_text,
+                            ],
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        ),
+                        bgcolor=ft.Colors.with_opacity(0.9, "#FFFFFF"),
+                        border_radius=14,
+                        padding=14,
+                        expand=True,
+                    ),
+                    ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text("مجموع", size=12, color="#4A148C"),
+                                total_text,
+                            ],
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        ),
+                        bgcolor=ft.Colors.with_opacity(0.9, "#FFFFFF"),
+                        border_radius=14,
+                        padding=14,
+                        expand=True,
+                    ),
+                ],
+                spacing=10,
+            ),
+            ft.Container(height=15),
+            wage_input,
+            ft.Container(height=8),
+            ft.Row(
+                [
+                    ft.ElevatedButton(
+                        "➕ إضافة",
+                        on_click=add_day,
+                        bgcolor="#0288D1",
+                        color="#FFFFFF",
+                        height=50,
+                        expand=True,
+                    ),
+                    ft.ElevatedButton(
+                        "🗑 حذف",
+                        on_click=reset_all,
+                        bgcolor="#E53935",
+                        color="#FFFFFF",
+                        height=50,
+                        expand=True,
+                    ),
+                ],
+                spacing=10,
+            ),
+            ft.Container(height=15),
+            ft.Text("📋 السجلات", size=15, color="#FFD700",
+                    weight=ft.FontWeight.BOLD),
+            records_list,
+            ft.Container(height=20),
+        ],
+        spacing=8,
+        scroll=ft.ScrollMode.AUTO,
+        expand=True,
+    )
+
+    # ═══ الجذر: خلفية الباندا + المحتوى + نافذة الرسالة ═══
     page.add(
-        name_text,
-        ft.Container(height=10),
-        ft.Row(
+        ft.Stack(
             [
+                # 1) صورة الباندا
+                ft.Image(src="bg.jpg", fit=ft.ImageFit.COVER, expand=True),
+                # 2) طبقة بنفسجية شفافة
                 ft.Container(
-                    content=ft.Column(
-                        [ft.Text("أيام", size=12, color="#4A148C"), days_text],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                    bgcolor="#FFFFFF",
-                    border_radius=14,
-                    padding=12,
+                    bgcolor=ft.Colors.with_opacity(0.55, "#4A148C"),
                     expand=True,
                 ),
+                # 3) المحتوى
                 ft.Container(
-                    content=ft.Column(
-                        [ft.Text("مجموع", size=12, color="#4A148C"), total_text],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                    bgcolor="#FFFFFF",
-                    border_radius=14,
-                    padding=12,
+                    content=content,
+                    padding=20,
                     expand=True,
                 ),
+                # 4) نافذة الرسالة (مخفية حتى تُستدعى)
+                love_overlay,
             ],
-            spacing=10,
-        ),
-        ft.Container(height=10),
-        wage_input,
-        ft.Container(height=6),
-        ft.Row(
-            [
-                ft.ElevatedButton(
-                    "➕ إضافة",
-                    on_click=add_day,
-                    bgcolor="#0288D1",
-                    color="#FFFFFF",
-                    height=48,
-                    expand=True,
-                ),
-                ft.ElevatedButton(
-                    "🗑 حذف",
-                    on_click=reset_all,
-                    bgcolor="#E53935",
-                    color="#FFFFFF",
-                    height=48,
-                    expand=True,
-                ),
-            ],
-            spacing=10,
-        ),
-        ft.Container(height=10),
-        ft.Text("📋 السجلات", size=15, color="#FFD700",
-                weight=ft.FontWeight.BOLD),
-        records_list,
+            expand=True,
+        )
     )
 
     refresh()
